@@ -12,7 +12,7 @@ Source code of PLVS for Visual Storytelling task.
 
 ### Datasets
 
-Download VIST ResNet152 features and put in project directory, make sure in `src_xxx/dataset.py` the path is correct. (Acutally you can generate ResNet152 features from original dataset)
+Download VIST ResNet152 features and put in project directory, make sure in `src_xxx/dataset.py` the path is correct. 
 
 
 ### Generate Rake plan or concept
