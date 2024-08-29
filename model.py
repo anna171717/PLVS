@@ -20,7 +20,7 @@ encoder_num_layers = 1
 decoder_num_layers = 2
 visual_dropout = 0.2
 decoder_dropout = 0.5
-feat_size = 2048  # 2048 for resnet, 4096 for vgg
+feat_size = 1024
 with_position = False  # 'whether to use position embedding for the image feature' word
 
 
