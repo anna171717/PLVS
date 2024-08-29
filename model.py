@@ -209,9 +209,7 @@ class BuTdModel(nn.Module):
         self.concept_proj = nn.Sequential(nn.Linear(self.concept_length, word_embed_dim),
                                           nn.Tanh())
         # self.baseline_estimator = nn.Linear(self.hidden_dim * 3, 1)
-        # text合并变换
-        self.merge = nn.Sequential(nn.Linear(self.hidden_dim * 6, self.feat_size),
-                                   nn.Tanh())
+       
         self.init_weights(0.1)
         # self.baseline_estimator = nn.Linear(self.hidden_dim * 3, 1)
 
@@ -300,12 +298,8 @@ class BuTdModel(nn.Module):
             dim=1)  # batch_size*5
         concept_attn_applied = torch.bmm(concept_attn_weights.unsqueeze(1), concept_emb)  # batch_size*1*512
 
-
-
         input_l_temp = torch.cat((image_attn_applied, image_output_a, plan_output_a, plan_attn_applied,concept_output_a,concept_attn_applied), 2)
-        # input_l_temp = torch.cat((image_attn_applied, image_output_a, plan_output_a, plan_attn_applied, concept_attn_applied,concept_output_a), 2)
-        # input_l = torch.cat((image_attn_applied, image_output_a), 2)
-        # input_l = self.merge(input_l_temp)
+       
         output_l, hl = self.languageRNN(input_l_temp, hl)  # 64*1*512
 
         log_probs = F.log_softmax(self.logit(output_l[:, 0, :]), dim=1)  # 64*vocab_size
