@@ -104,53 +104,28 @@ class VISTDataset(Dataset):
         ##concept_pr
         self.concept= {}
         self.not_find_photo = []
-        # data = { }
-        #
-        # for split in ['train', 'val']:
-        #     new_dict = { }
-        #     json_file_path = os.path.join(path_concept_pr, f'VIST_{split}_diverse.json')
-        #     with open(json_file_path, 'r') as f:
-        #         data[split] = json.load(f)
-        #         for sublist in data[split]:
-        #             for dictionary in sublist:
-        #                 # for key, value in dictionary.items():
-        #                 #     print(f"Key: {key}, Value: {value}")
-        #                             # for item in data:
-        #                 photo_id = dictionary["photo_flickr_id"]
-        #                 # print(type(dictionary))
-        #                 # print(dictionary)
-        #                 Noun = dictionary.get("Noun", [])
-        #                 Word = dictionary.get("Word", [])
-        #                 # self.concept[split][new_dict] = {"Noun": Noun, "Word": Word}
-        #                 Noun.extend(Word)
-        #                 new_dict[photo_id] = Noun
-        #     self.concept[split]=new_dict
-        #     print("concept", self.concept[split])
-        #
-        # split = 'test'
-        # test_dict = {}
-        # json_file_path = os.path.join(path_concept_pr, f'VIST_{split}_diverse.json')
-        # with open(json_file_path, 'r') as f:
-        #     data[split] = json.load(f)
-        #     for dictionary in data[split]:
-        #             # for key, value in dictionary.items():
-        #             #     print(f"Key: {key}, Value: {value}")
-        #             # for item in data:
-        #             photo_id = dictionary["photo_flickr_id"]
-        #             print(type(dictionary))
-        #             print(dictionary)
-        #             Noun = dictionary.get("Noun", [])
-        #             Word = dictionary.get("Word", [])
-        #             # self.concept[split][new_dict] = {"Noun": Noun, "Word": Word}
-        #             Noun.extend(Word)
-        #             test_dict[photo_id] = Noun
-        # self.concept[split] = new_dict
-        # print("concept", self.concept[split])
-        # for split in ['train', 'val', 'test']:
-        #     with open(os.path.join(path_save_concept_pr, f'{split}_concept_keywords.json'), 'w') as f:
-        #             json.dump(self.concept[split], f)
-        #     max_key_length = max(len(key) for key in self.concept[split].keys())
-        # self.max_concept_length=max_key_length
+        data = { }
+        
+        for split in ['train', 'val'，'tst']:
+            new_dict = { }
+            json_file_path = os.path.join(path_concept_pr, f'VIST_{split}_diverse.json')
+            with open(json_file_path, 'r') as f:
+                data[split] = json.load(f)
+                for sublist in data[split]:
+                    for dictionary in sublist:
+                        # for key, value in dictionary.items():
+                        #     print(f"Key: {key}, Value: {value}")
+                                    # for item in data:
+                        photo_id = dictionary["photo_flickr_id"]
+                        # print(type(dictionary))
+                        # print(dictionary)
+                        Noun = dictionary.get("Noun", [])
+                        Word = dictionary.get("Word", [])
+                        # self.concept[split][new_dict] = {"Noun": Noun, "Word": Word}
+                        Noun.extend(Word)
+                        new_dict[photo_id] = Noun
+            self.concept[split]=new_dict
+            print("concept", self.concept[split])
         for split in ['train', 'val', 'test']:
             # 11维度
             json_file_path = os.path.join(path_save_concept_pr, f'{split}_concept_keywords.json')
@@ -246,23 +221,23 @@ class VISTDataset(Dataset):
         for i in range(story['length']):
 
             img_name = story['flickr_id'][i]
-            # print(img_name)
+            
             if self.mode in self.concept:
                 if img_name not in self.concept[self.mode]:
-                    self.concept[self.mode][img_name] = {}  # 创建一个新的空字典
+                    self.concept[self.mode][img_name] = {}  #
             else:
-                self.concept[self.mode] = {img_name: {}}  # 创建一个新的字典
+                self.concept[self.mode] = {img_name: {}}  # 
 
-            # 然后可以继续访问 self.concept[self.mode][img_nam
+            
             text_list = self.concept[self.mode][img_name]
             # text_list = list(text_list)
-            """用Bert编码"""
+            
             text = ""
             text = "[SEP]".join(text_list)
             text = f"[CLS]{text.strip()}"
 
             concept_length = len(text)
-            # 更新最大长度
+            
             if concept_length > self.concept_max_length:
                 self.concept_max_length = concept_length
 
@@ -274,7 +249,7 @@ class VISTDataset(Dataset):
                 return_attention_mask=True,  # Generate the attention mask
                 return_tensors='pt',  # ask the function to return PyTorch tensors
             )["input_ids"]
-            """bert编码结束"""
+            
             concept_embedding_list[i] = concept_embedding
             # tensor维度【5，bert——maxlen】
         # print("concept_length:",self.concept_max_length)
@@ -292,10 +267,10 @@ class VISTDataset(Dataset):
             # print(img_name)
             if img_name not in self.VQA_plan[self.mode]:
                 self.not_find_photo.append(img_name)
-                self.VQA_plan[self.mode][img_name] = {}  # 创建一个新的空字典
+                self.VQA_plan[self.mode][img_name] = {}  # 
             text_list = self.VQA_plan[self.mode][img_name]
             # text_list = list(text_list)
-            """用Bert编码"""
+           
             text = ""
             # #QA
             for item in text_list:
@@ -310,7 +285,7 @@ class VISTDataset(Dataset):
             # text = "[SEP]".join(text_list)
             text = f"[CLS]{text.strip()}"
             plan_length = len(text)
-            # 更新最大长度
+           
             if plan_length > self.plan_max_length:
                 self.plan_max_length = plan_length
             plan_embedding = self.embedding.encode_plus(
@@ -321,9 +296,9 @@ class VISTDataset(Dataset):
                 return_attention_mask=True,  # Generate the attention mask
                 return_tensors='pt',  # ask the function to return PyTorch tensors
             )["input_ids"]
-            """bert编码结束"""
+            
             plan_embedding_list[i] = plan_embedding
-            # tensor维度【5，bert——maxlen】
+         
         with open(os.path.join(output_file_dir, f'plan_not_find_photo_2 .json'), 'w', encoding='utf-8') as f:
             json.dump(self.not_find_photo, f, ensure_ascii=False)
         # print("plan_length:", self.plan_max_length)
