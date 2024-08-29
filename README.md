@@ -15,7 +15,7 @@ Source code of PLVS for Visual Storytelling task.
 Download VIST ResNet152 features and put in project directory, make sure in `src_xxx/dataset.py` the path is correct. 
 
 
-### Generate Rake plan or concept
+### Generate plan or concept
 
 ```bash
 cd src_xxx
