@@ -161,12 +161,12 @@ def train():
             target = Variable(batch['split_story']).to(device)  # batch_size*5*30
             index = batch['index']
 
-            optimizer.zero_grad()  # zero the parameter gradients 优化器梯度归零
+            optimizer.zero_grad()  # zero the parameter gradients 
 
-            with torch.no_grad():  # 不计算梯度
+            with torch.no_grad():  # 
                 plans = batch['plans']
-                keywords = plans.to(device)
-                concept = batch['concept'].to(device)
+                keywords = plans
+                concept = batch['concept']
             # cross entropy loss
             output = model(feature_fc, keywords, concept, target)  # 64*5*30*vocab_size
             loss = crit(output, target)  # LanguageModelCriterion
@@ -177,7 +177,7 @@ def train():
             # aloss = crit.hamming_diversity_crit(output, target, 2, 0.3)
             loss = loss + 0.1 * aloss
 
-            # reinforcement learning loss 强化学习损失
+            # reinforcement learning loss 
             if rl_start_epoch >= 0 and epoch >= rl_start_epoch:
                 # actor-critic
                 seq, seq_log_probs, baseline = model.sample(feature_fc, keywords,concept)
@@ -194,7 +194,7 @@ def train():
                     writer.add_scalar('train/rl_avg_baseline', avg_baseline, iteration)
                 loss = rl_loss
 
-            loss.backward()  # 计算交叉熵损失
+            loss.backward()  # 
             train_loss = loss.item()
 
             nn.utils.clip_grad_norm(model.parameters(), grad_clip, norm_type=2)
